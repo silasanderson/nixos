@@ -2,11 +2,11 @@
 
 /* appearance */
 static const unsigned int borderpx  = 3;        /* border pixel of windows */
-static const unsigned int snap      = 20;       /* snap pixel */
-static const unsigned int gappih    = 20;       /* horiz inner gap between windows */
-static const unsigned int gappiv    = 20;       /* vert inner gap between windows */
-static const unsigned int gappoh    = 20;       /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov    = 20;       /* vert outer gap between windows and screen edge */
+static const unsigned int snap      = 32;       /* snap pixel */
+static const unsigned int gappih    = 30;       /* horiz inner gap between windows */
+static const unsigned int gappiv    = 30;       /* vert inner gap between windows */
+static const unsigned int gappoh    = 30;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov    = 30;       /* vert outer gap between windows and screen edge */
 static const int swallowfloating    = 1;        /* 1 means swallow floating windows by default */
 static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -17,7 +17,7 @@ static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#f94144";
+static char selbordercolor[]        = "#005577";
 static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
@@ -39,13 +39,8 @@ static const Rule rules[] = {
 	{ "St",      NULL,     NULL,           0,			0,			0,          1,           0,        -1,		0 },
 	{ NULL,      "float",  NULL,		   0,			1,			1,          1,           0,        -1,		0 },
 	{ NULL,      NULL,     "Event Tester", 0,			0,			0,          0,           1,        -1,		0 }, 
-	{ NULL,		 NULL,	   "qalc",		   0,			1,			1,          1,           0,        -1,	  'q' },
+	{ NULL,		 NULL,	   "bccmd",		   0,			1,			1,          1,           0,        -1,	  'b' },
 	{ NULL,		 NULL,	   "scratchpad",   0,			1,			1,          1,           0,        -1,	  's' },
-	{ "Mullvad VPN",		 NULL,	   NULL,    	   0,			0,			1,          0,           0,        -1,	  'v' },
-	{ NULL,		 NULL,	   "media",		   0,			0,			1,          1,           0,        -1,	  'm' },
-	{ NULL,		 NULL,	   "newsboat",	   0,			0,			0,          1,           0,        -1,	  'n' },
-	{ "discord", NULL,	   NULL,		   0,			0,			0,          0,           0,        -1,	  'd' },
-	/* { "open.spotify.com", NULL,	   NULL,	   0,			0,			0,          0,           0,        -1,	  'g' }, */
 };
 
 /* layout(s) */
@@ -100,44 +95,34 @@ static const char *termcmd[]  = { "st", NULL };
 
 /*First arg only serves to match against key in rules*/
 static const char *pad[] = {"s", "st", "-g", "100x25", "-t", "scratchpad", NULL}; 
-static const char *qalc[] = {"q", "st", "-t", "qalc", "-g", "50x20", "-e", "qalc", "-i", NULL}; 
-static const char *media[] = {"m", "st", "-t", "media", NULL}; 
-static const char *newsboat[] = {"n", "st", "-e", "newsboat", NULL}; 
-static const char *discordcmd[] = {"d", "discord", NULL}; 
-/* static const char *spotify[] = {"g", "brave", "--app=https://open.spotify.com", NULL}; */ 
+static const char *bccmd[] = {"b", "st", "-t", "bccmd", "-g", "50x20", "-e", "bc", "-lq", NULL}; 
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	/* { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } }, */
 	{ MODKEY,						XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,						XK_grave, togglescratch,  {.v = pad } },
-	/* { MODKEY|ShiftMask,				XK_Return, togglescratch,  {.v = pad } }, */
-	{ MODKEY|ShiftMask,				XK_semicolon, togglescratch,  {.v = pad } },
-	{ MODKEY|ShiftMask,				XK_d,      togglescratch,  {.v = discordcmd } },
-	/* { MODKEY|ShiftMask,				XK_s,      togglescratch,  {.v = spotify } }, */
-	{ MODKEY,						XK_n,      togglescratch,  {.v = newsboat } },
-	{ MODKEY,						XK_apostrophe, togglescratch,  {.v = qalc } },
-	{ MODKEY,						XK_backslash, togglescratch,  {.v = media } },
+	{ MODKEY|ShiftMask,				XK_Return, togglescratch,  {.v = pad } },
+	{ MODKEY,						XK_apostrophe, togglescratch,  {.v = bccmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY|ShiftMask,             XK_j,      focusmon,    {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_k,      focusmon,    {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_j,      rotatestack,    {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,      rotatestack,    {.i = -1 } },
 	/* { MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, */
 	/* { MODKEY,                       XK_k,      focusstack,     {.i = -1 } }, */
 	STACKKEYS(MODKEY,                          focus)
 	STACKKEYS(MODKEY|ShiftMask,                push)
-	{ MODKEY|ShiftMask,             XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,			            XK_d,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.02} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.02} },
 	/* { MODKEY,                       XK_Return, zoom,           {0} }, */
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[6]} },
-	{ MODKEY,			            XK_i,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[8]} },
 	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[5]} },
 	{ MODKEY|ShiftMask,             XK_u,      setlayout,      {.v = &layouts[11]} },
 	{ MODKEY,                       XK_space,  zoom,           {0} },
-	{ MODKEY|ShiftMask,             XK_f,	   togglefloating, {0} },
+	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,			            XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
@@ -185,7 +170,9 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
+	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
+	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
